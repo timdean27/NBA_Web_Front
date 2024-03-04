@@ -8,6 +8,11 @@ interface Player {
     first_name: string;
     last_name: string;
     href: string;
+    img_src: string;
+    ppg: number;
+    apg: number;
+    rpg: number;
+    pie: number;
   }
   
   interface PlayerListProps {
@@ -44,6 +49,10 @@ interface Player {
               <li>Full Name: {player.first_name} {player.last_name}</li>
               <li>First Name: {player.first_name}</li>
               <li>Last Name: {player.last_name}</li>
+              <li>PPG: {player.ppg}</li>
+              <li>APG: {player.apg}</li>
+              <li>RPG: {player.rpg}</li>
+              <li>PIE: {player.pie}</li>
               <li>Href: {player.href}</li>
               <img src={player.img_src} alt={`Image of ${player.first_name} ${player.last_name}`} />
             </ul>
