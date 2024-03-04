@@ -1,26 +1,24 @@
-import { Box, Flex } from "@chakra-ui/react";
-import Sidebar from "../../components/Sidebar/Sidebar";
-import { useLocation } from "react-router-dom";
+// PageLayout.tsx
 
-import React, { ReactNode } from 'react';
+import React from 'react';
+import { Box, Flex } from '@chakra-ui/react';
+import Sidebar from '../../components/Sidebar/Sidebar';
+import { useLocation } from 'react-router-dom';
 
-interface PageLayoutProps {
-  children: ReactNode;
-}
-
-const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
+const PageLayout = ({ children }: { children: React.ReactNode }) => {
   const { pathname } = useLocation();
 
   return (
     <Flex>
-      {/* sidebar on the left */}
-      {pathname !== "/auth" ? (
-        <Box w={{ base: "70px", md: "240px" }}>
+      {/* Sidebar on the left */}
+      {pathname !== '/auth' && (
+        <Box w={{ base: '70px', md: '240px' }} borderRight="1px solid black" boxShadow="2xl">
           <Sidebar />
         </Box>
-      ) : null}
-      {/* the page content on the right */}
-      <Box flex={1} w={{ base: "calc(100% - 70px)", md: "calc(100% - 240px)" }}>
+      )}
+
+      {/* The page content on the right */}
+      <Box flex={1} w={{ base: 'calc(100% - 70px)', md: 'calc(100% - 240px)' }} boxShadow="2xl">
         {children}
       </Box>
     </Flex>
@@ -28,4 +26,3 @@ const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
 };
 
 export default PageLayout;
-

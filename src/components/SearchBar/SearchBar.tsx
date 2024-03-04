@@ -1,43 +1,41 @@
 // SearchBar.tsx
 
 import React, { useState, ChangeEvent } from "react";
-import { Button, Box, Select } from "@chakra-ui/react";
 
 interface Player {
   id: number;
   first_name: string;
   last_name: string;
+  ppg: number;
+  apg: number;
+  rpg: number;
+  pie: number;
 }
 
 interface SearchBarProps {
   playerData: Player[];
-  setSeletedPlayer: React.Dispatch<React.SetStateAction<Player | null>>;
+  setFilteredPlayers: React.Dispatch<React.SetStateAction<Player[]>>;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ playerData, setSeletedPlayer }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ playerData, setFilteredPlayers }) => {
   const [searchFirst, setSearchFirst] = useState("");
   const [searchLast, setSearchLast] = useState("");
   const [searchID, setSearchID] = useState("");
-  const [filteredNames, setFilteredNames] = useState(playerData);
-  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
-  const filterNames = (searchTerm: string, searchBy: string) => {
-    let result: Player[] = [];
-    if (searchBy === "first_name") {
-      result = playerData.filter((name) =>
-        name.first_name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    } else if (searchBy === "last_name") {
-      result = playerData.filter((name) =>
-        name.last_name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    } else if (searchBy === "id") {
-      result = playerData.filter((name) =>
-        name.id.toString().includes(searchTerm)
-      );
-    }
-    setFilteredNames(result);
-    setIsDropdownVisible(true);
+  const filterAndSortPlayers = () => {
+    let filteredPlayers = playerData.filter((player) => {
+      const firstNameMatch =
+        player.first_name.toLowerCase().includes(searchFirst.toLowerCase()) ||
+        searchFirst === "";
+      const lastNameMatch =
+        player.last_name.toLowerCase().includes(searchLast.toLowerCase()) ||
+        searchLast === "";
+      const idMatch = player.id.toString().includes(searchID) || searchID === "";
+
+      return firstNameMatch && lastNameMatch && idMatch;
+    });
+
+    setFilteredPlayers(filteredPlayers);
   };
 
   const handleInputChange = (
@@ -48,24 +46,18 @@ const SearchBar: React.FC<SearchBarProps> = ({ playerData, setSeletedPlayer }) =
     switch (searchBy) {
       case "first_name":
         setSearchFirst(searchTerm);
-        filterNames(searchTerm, "first_name");
         break;
       case "last_name":
         setSearchLast(searchTerm);
-        filterNames(searchTerm, "last_name");
         break;
       case "id":
         setSearchID(searchTerm);
-        filterNames(searchTerm, "id");
         break;
       default:
         break;
     }
-  };
 
-  const handleSelectChange = (selectedPlayer: Player) => {
-    setSeletedPlayer(selectedPlayer);
-    setIsDropdownVisible(false);
+    filterAndSortPlayers();
   };
 
   return (
@@ -88,20 +80,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ playerData, setSeletedPlayer }) =
         value={searchID}
         onChange={(e) => handleInputChange(e, "id")}
       />
-      {isDropdownVisible && (
-        <Box mt={2}>
-          <Select
-            placeholder="Select a player"
-            onChange={(e) => handleSelectChange(JSON.parse(e.target.value))}
-          >
-            {filteredNames.map((name, index) => (
-              <option key={index} value={JSON.stringify(name)}>
-                {name.first_name} {name.last_name} (ID: {name.id})
-              </option>
-            ))}
-          </Select>
-        </Box>
-      )}
     </div>
   );
 };
