@@ -1,42 +1,22 @@
 // SearchBar.tsx
 
 import React, { useState, ChangeEvent } from "react";
+import { Button, Box, Select } from "@chakra-ui/react";
 
 interface Player {
   id: number;
   first_name: string;
   last_name: string;
-  ppg: number;
-  apg: number;
-  rpg: number;
-  pie: number;
 }
 
 interface SearchBarProps {
-  playerData: Player[];
-  setFilteredPlayers: React.Dispatch<React.SetStateAction<Player[]>>;
+  filterAndSortPlayers: (searchFirst: string, searchLast: string, searchID: string) => void;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ playerData, setFilteredPlayers }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ filterAndSortPlayers }) => {
   const [searchFirst, setSearchFirst] = useState("");
   const [searchLast, setSearchLast] = useState("");
   const [searchID, setSearchID] = useState("");
-
-  const filterAndSortPlayers = () => {
-    let filteredPlayers = playerData.filter((player) => {
-      const firstNameMatch =
-        player.first_name.toLowerCase().includes(searchFirst.toLowerCase()) ||
-        searchFirst === "";
-      const lastNameMatch =
-        player.last_name.toLowerCase().includes(searchLast.toLowerCase()) ||
-        searchLast === "";
-      const idMatch = player.id.toString().includes(searchID) || searchID === "";
-
-      return firstNameMatch && lastNameMatch && idMatch;
-    });
-
-    setFilteredPlayers(filteredPlayers);
-  };
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement>,
@@ -57,7 +37,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ playerData, setFilteredPlayers })
         break;
     }
 
-    filterAndSortPlayers();
+    filterAndSortPlayers(searchFirst, searchLast, searchID);
   };
 
   return (

@@ -20,12 +20,13 @@ interface SortBarProps {
   setSortedPlayers: React.Dispatch<React.SetStateAction<Player[] | null>>;
 }
 
-const SortBar: React.FC<SortBarProps> = ({ playerData, setSortedPlayers }) => {
+const SortBar: React.FC<SortBarProps> = ({ playerData, setSortedPlayers,}) => {
   const [sortBy, setSortBy] = useState('');
+  const [ isFilteredHigh, setisFilteredHigh]= useState(false);
 
   const handleSort = (criteria: string) => {
     let sortedPlayers = [...playerData];
-
+    if( isFilteredHigh == false || isFilteredHigh == ""){
     switch (criteria) {
       case 'ppg':
         sortedPlayers.sort((a, b) => b.ppg - a.ppg);
@@ -42,12 +43,33 @@ const SortBar: React.FC<SortBarProps> = ({ playerData, setSortedPlayers }) => {
       default:
         break;
     }
-
+    setisFilteredHigh(true)
+  }
+  if( isFilteredHigh == true){
+    switch (criteria) {
+      case 'ppg':
+        sortedPlayers.sort((a, b) => a.ppg - b.ppg);
+        break;
+      case 'apg':
+        sortedPlayers.sort((a, b) => a.apg - b.apg);
+        break;
+      case 'rpg':
+        sortedPlayers.sort((a, b) => a.rpg - b.rpg);
+        break;
+      case 'pie':
+        sortedPlayers.sort((a, b) => a.pie - b.pie);
+        break;
+      default:
+        break;
+    }
+    setisFilteredHigh(false)
+  }
     setSortBy(criteria);
     setSortedPlayers(sortedPlayers);
   };
 
   return (
+    <div>
     <ButtonGroup>
       <Button onClick={() => handleSort('ppg')} variant={sortBy === 'ppg' ? 'solid' : 'outline'}>
         PPG
@@ -62,6 +84,7 @@ const SortBar: React.FC<SortBarProps> = ({ playerData, setSortedPlayers }) => {
         PIE
       </Button>
     </ButtonGroup>
+    </div>
   );
 };
 
