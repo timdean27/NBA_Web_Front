@@ -7,8 +7,13 @@ interface Player {
   id: number;
   first_name: string;
   last_name: string;
+  href: string;
+  img_src: string;
+  ppg: number;
+  apg: number;
+  rpg: number;
+  pie: number;
 }
-
 interface SearchBarProps {
   filterAndSortPlayers: (searchFirst: string, searchLast: string, searchID: string) => void;
 }
