@@ -95,7 +95,7 @@ const HomePage: React.FC<{ playerData: Player[] }> = ({ playerData }) => {
               <li>First Name: {player.first_name}</li>
               <li>Last Name: {player.last_name}</li>
               <li>PPG: {player.ppg}</li>
-              <li>APG: {player.apg}</li>``
+              <li>APG: {player.apg}</li>
               <li>RPG: {player.rpg}</li>
               <li>PIE: {player.pie}</li>
               <img src={player.img_src} alt={`Image of ${player.first_name} ${player.last_name}`} />
