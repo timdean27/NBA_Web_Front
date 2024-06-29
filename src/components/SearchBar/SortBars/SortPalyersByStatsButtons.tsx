@@ -1,4 +1,4 @@
-// SortBar.tsx
+// SortPalyersByStatsButtons.tsx
 
 import React, { useState } from 'react';
 import { Button, ButtonGroup } from '@chakra-ui/react';
@@ -15,12 +15,12 @@ interface Player {
   pie: number;
 }
 
-interface SortBarProps {
+interface SortPalyersByStatsButtonsProps {
   playerData: Player[];
   setSortedPlayers: React.Dispatch<React.SetStateAction<Player[] | null>>;
 }
 
-const SortBar: React.FC<SortBarProps> = ({ playerData, setSortedPlayers,}) => {
+const SortPalyersByStatsButtons: React.FC<SortPalyersByStatsButtonsProps> = ({ playerData, setSortedPlayers,}) => {
   const [sortBy, setSortBy] = useState('');
   const [ isFilteredHigh, setisFilteredHigh]= useState(false);
 
@@ -88,5 +88,5 @@ const SortBar: React.FC<SortBarProps> = ({ playerData, setSortedPlayers,}) => {
   );
 };
 
-export default SortBar;
+export default SortPalyersByStatsButtons;
 
