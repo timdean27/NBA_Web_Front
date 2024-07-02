@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button, Box, Flex, Text } from "@chakra-ui/react";
 import SearchBarByName from "../../components/SearchBar/SearchBarByName";
-import SortPalyersByStatsButtons from "../../components/SearchBar/SortBars/SortPalyersByStatsButtons"; // Adjust import path as necessary
+import SortByPlayerStatsButtons from "../../components/SearchBar/SortBars/SortPalyersByStatsButtons";
 
 interface Player {
   id: number;
@@ -17,11 +17,39 @@ interface Player {
 
 const HomePage: React.FC<{ playerData: Player[] }> = ({ playerData }) => {
   const [filteredPlayersByName, setFilteredPlayersByName] = useState<Player[]>([]);
+  const [filteredPlayersByStatsParameters, setFilteredPlayersByStatsParameters] = useState<string[]>([]);
   const [sortedPlayers, setSortedPlayers] = useState<Player[]>([]);
 
   useEffect(() => {
     setFilteredPlayersByName(playerData);
-  }, [playerData, sortedPlayers]);
+  }, [playerData]);
+
+  useEffect(() => {
+    // Apply sorting based on filteredPlayersByStatsParameters
+    let updatedPlayers = [...filteredPlayersByName];
+
+    // Sort by each selected parameter in filteredPlayersByStatsParameters
+    filteredPlayersByStatsParameters.forEach(criteria => {
+      switch (criteria) {
+        case 'ppg':
+          updatedPlayers.sort((a, b) => b.ppg - a.ppg);
+          break;
+        case 'apg':
+          updatedPlayers.sort((a, b) => b.apg - a.apg);
+          break;
+        case 'rpg':
+          updatedPlayers.sort((a, b) => b.rpg - a.rpg);
+          break;
+        case 'pie':
+          updatedPlayers.sort((a, b) => b.pie - a.pie);
+          break;
+        default:
+          break;
+      }
+    });
+
+    setSortedPlayers(updatedPlayers);
+  }, [filteredPlayersByStatsParameters, filteredPlayersByName]);
 
   const filterAndSortPlayersByName = (
     searchFirst: string,
@@ -40,14 +68,21 @@ const HomePage: React.FC<{ playerData: Player[] }> = ({ playerData }) => {
       return firstNameMatch && lastNameMatch && idMatch;
     });
 
-    // Example of sorting by first name alphabetically
-    const sortedPlayers = filteredPlayers.sort((a, b) =>
+    // Sort alphabetically by first name
+    const sortedPlayersUsingName = filteredPlayers.sort((a, b) =>
       a.first_name.localeCompare(b.first_name)
     );
 
-    setSortedPlayers(sortedPlayers);
+    setFilteredPlayersByName(sortedPlayersUsingName);
   };
 
+  const clearAllFilters = () => {
+    setFilteredPlayersByName(playerData); // Reset to the original playerData or empty array if necessary
+    setFilteredPlayersByStatsParameters([]); // Clear sorting criteria
+    setSortedPlayers([]); // Clear sorted players array
+    filterAndSortPlayersByName("", "", ""); // Reset search criteria
+  };
+  
   const cardStyles = {
     border: "1px solid #000",
     borderRadius: "8px",
@@ -73,9 +108,8 @@ const HomePage: React.FC<{ playerData: Player[] }> = ({ playerData }) => {
         <Button colorScheme="teal">Full Player List</Button>
       </Link>
       <SearchBarByName filterAndSortPlayersByName={filterAndSortPlayersByName} />
-
-      <SortPalyersByStatsButtons playerData={sortedPlayers} setSortedPlayers={setSortedPlayers} />
-
+      <SortByPlayerStatsButtons setFilteredPlayersByStatsParameters={setFilteredPlayersByStatsParameters} />
+      <Button mt={4} onClick={clearAllFilters}>Clear All Filters</Button>
       <Flex wrap="wrap" justify="center" align="flex-start" mt={4}>
         {sortedPlayers.length > 0 ? (
           sortedPlayers.map((player) => (

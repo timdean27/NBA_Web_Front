@@ -1,5 +1,3 @@
-// SortPalyersByStatsButtons.tsx
-
 import React, { useState } from 'react';
 import { Button, ButtonGroup } from '@chakra-ui/react';
 
@@ -15,78 +13,43 @@ interface Player {
   pie: number;
 }
 
-interface SortPalyersByStatsButtonsProps {
+interface SortPlayersByStatsButtonsProps {
   playerData: Player[];
-  setSortedPlayers: React.Dispatch<React.SetStateAction<Player[] | null>>;
+  setFilteredPlayersByStatsParameters: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const SortPalyersByStatsButtons: React.FC<SortPalyersByStatsButtonsProps> = ({ playerData, setSortedPlayers,}) => {
-  const [sortBy, setSortBy] = useState('');
-  const [ isFilteredHigh, setisFilteredHigh]= useState(false);
+const SortPlayersByStatsButtons: React.FC<SortPlayersByStatsButtonsProps> = ({ setFilteredPlayersByStatsParameters }) => {
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
   const handleSort = (criteria: string) => {
-    let sortedPlayers = [...playerData];
-    if( isFilteredHigh == false || isFilteredHigh == ""){
-    switch (criteria) {
-      case 'ppg':
-        sortedPlayers.sort((a, b) => b.ppg - a.ppg);
-        break;
-      case 'apg':
-        sortedPlayers.sort((a, b) => b.apg - a.apg);
-        break;
-      case 'rpg':
-        sortedPlayers.sort((a, b) => b.rpg - a.rpg);
-        break;
-      case 'pie':
-        sortedPlayers.sort((a, b) => b.pie - a.pie);
-        break;
-      default:
-        break;
+    let updatedFilters = [...selectedFilters];
+    if (updatedFilters.includes(criteria)) {
+      updatedFilters = updatedFilters.filter(filter => filter !== criteria);
+    } else {
+      updatedFilters.push(criteria);
     }
-    setisFilteredHigh(true)
-  }
-  if( isFilteredHigh == true){
-    switch (criteria) {
-      case 'ppg':
-        sortedPlayers.sort((a, b) => a.ppg - b.ppg);
-        break;
-      case 'apg':
-        sortedPlayers.sort((a, b) => a.apg - b.apg);
-        break;
-      case 'rpg':
-        sortedPlayers.sort((a, b) => a.rpg - b.rpg);
-        break;
-      case 'pie':
-        sortedPlayers.sort((a, b) => a.pie - b.pie);
-        break;
-      default:
-        break;
-    }
-    setisFilteredHigh(false)
-  }
-    setSortBy(criteria);
-    setSortedPlayers(sortedPlayers);
+    setSelectedFilters(updatedFilters);
+    setFilteredPlayersByStatsParameters(updatedFilters);
   };
 
   return (
     <div>
-    <ButtonGroup>
-      <Button onClick={() => handleSort('ppg')} variant={sortBy === 'ppg' ? 'solid' : 'outline'}>
-        PPG
-      </Button>
-      <Button onClick={() => handleSort('apg')} variant={sortBy === 'apg' ? 'solid' : 'outline'}>
-        APG
-      </Button>
-      <Button onClick={() => handleSort('rpg')} variant={sortBy === 'rpg' ? 'solid' : 'outline'}>
-        RPG
-      </Button>
-      <Button onClick={() => handleSort('pie')} variant={sortBy === 'pie' ? 'solid' : 'outline'}>
-        PIE
-      </Button>
-    </ButtonGroup>
+      <ButtonGroup>
+        <Button onClick={() => handleSort('ppg')} variant={selectedFilters.includes('ppg') ? 'solid' : 'outline'}>
+          PPG
+        </Button>
+        <Button onClick={() => handleSort('apg')} variant={selectedFilters.includes('apg') ? 'solid' : 'outline'}>
+          APG
+        </Button>
+        <Button onClick={() => handleSort('rpg')} variant={selectedFilters.includes('rpg') ? 'solid' : 'outline'}>
+          RPG
+        </Button>
+        <Button onClick={() => handleSort('pie')} variant={selectedFilters.includes('pie') ? 'solid' : 'outline'}>
+          PIE
+        </Button>
+      </ButtonGroup>
     </div>
   );
 };
 
-export default SortPalyersByStatsButtons;
-
+export default SortPlayersByStatsButtons;
