@@ -1,0 +1,30 @@
+/* styles/PlayerStats.css */
+
+.player-stats {
+    margin: 15px 0;
+  }
+  
+  .season-stats,
+  .last-5-games {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  
+  .season-stats ul, 
+  .last-5-games ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .season-stats ul li,
+  .last-5-games ul li {
+    margin: 5px 0;
+    font-size: 14px;
+  }
+  
+  .last-5-games h4 {
+    margin-top: 10px;
+  }
+  
