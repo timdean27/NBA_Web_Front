@@ -1,4 +1,6 @@
 import React from 'react';
+import { BarChart, barElementClasses } from '@mui/x-charts/BarChart';
+import { axisClasses } from '@mui/x-charts/ChartsAxis';
 
 interface Player {
   player_id: string;
@@ -6,46 +8,97 @@ interface Player {
 }
 
 interface SeasonStat {
-  player_id: string;
-  seasonAvgPoints: number;
+  assists: number;
+  blocks: number;
+  player: string;
+  points_per_game: number;
+  total_rebounds: number; // Add rebounds
 }
 
-interface Last5Stat {
-  player_id: string;
-  last5GamesPoints: number[]; // Assuming this holds the points from the last 5 games
+interface Last5GameStat {
+  assists: number;
+  blocks: number;
+  game_date: string;
+  player: string;
+  points: number;
+  total_rebounds: number; // Add rebounds
 }
 
 interface PlayerPointsChartProps {
   player: Player;
   seasonStats: SeasonStat[];
-  last5Stats: Last5Stat[];
+  last5Stats: Last5GameStat[];
 }
 
-const calculateLast5Average = (last5Points: number[]): number => {
-  const totalPoints = last5Points.reduce((total, points) => total + points, 0);
-  return last5Points.length > 0 ? totalPoints / last5Points.length : 0;
-};
+const colors: string[] = ['#FF8C00', '#1E90FF']; // Orange for season avg, Blue for last 5 avg
 
 const PlayerPointsChart: React.FC<PlayerPointsChartProps> = ({ player, seasonStats, last5Stats }) => {
-  const seasonData = seasonStats.find(stat => stat.player_id === player.player_id);
-  const last5Data = last5Stats.find(stat => stat.player_id === player.player_id);
+  const playerSeasonStats = seasonStats.find((stat) => stat.player === player.player_id);
+  const playerLast5GamesStats = last5Stats.filter((game) => game.player === player.player_id);
 
-  const seasonAverage = seasonData?.seasonAvgPoints ?? 0;
-  const last5Average = last5Data ? calculateLast5Average(last5Data.last5GamesPoints) : 0;
+  const calculateAverage = (games: Last5GameStat[], key: 'points' | 'assists' | 'total_rebounds' | 'blocks' ): number => {
+    if (games.length === 0) return 0;
+    const total = games.reduce((total, game) => total + game[key], 0);
+    return total / games.length;
+  };
 
-  const chartData = [
-    { type: 'Season Average', value: seasonAverage },
-    { type: 'Last 5 Games Average', value: last5Average },
-  ];
+  const last5AveragePoints = calculateAverage(playerLast5GamesStats, 'points');
+  const last5AverageAssists = calculateAverage(playerLast5GamesStats, 'assists');
+  const last5AverageRebounds = calculateAverage(playerLast5GamesStats, 'total_rebounds'); // Calculate rebounds
+  const last5AverageBlocks = calculateAverage(playerLast5GamesStats, 'blocks');
+
+
+  const seasonAveragePoints = playerSeasonStats?.points_per_game ?? 0;
+  const seasonAverageAssists = playerSeasonStats?.assists ?? 0;
+  const seasonAverageRebounds = playerSeasonStats?.total_rebounds ?? 0; // Get rebounds
+  const seasonAverageBlocks = playerSeasonStats?.blocks ?? 0;
 
   return (
-    <div>
-      <h3>{player.full_name}'s Points Comparison</h3>
-      <ul>
-        {chartData.map(item => (
-          <li key={item.type}>{item.type}: {item.value.toFixed(2)}</li> // Optional: Format to 2 decimal places
-        ))}
-      </ul>
+    <div className="player-stats">
+      <h3>{player.full_name}'s Performance</h3>
+
+      {/* Bar Chart */}
+      <BarChart
+        sx={(theme) => ({
+          [`.${barElementClasses.root}`]: {
+            fill: theme.palette.background.paper,
+            strokeWidth: 3,
+          },
+          [`.MuiBarElement-series-season_id`]: {
+            stroke: colors[0],
+          },
+          [`.MuiBarElement-series-last5_id`]: {
+            stroke: colors[1],
+          },
+          [`.${axisClasses.root}`]: {
+            [`.${axisClasses.tick}, .${axisClasses.line}`]: {
+              stroke: '#FF8C00', // Orange stroke for axis
+              strokeWidth: 3,
+            },
+            [`.${axisClasses.tickLabel}`]: {
+              fill: '#FF8C00', // Orange text for axis labels
+            },
+          },
+          border: '1px solid rgba(0, 0, 0, 0.1)',
+          backgroundImage:
+            'linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px)',
+          backgroundSize: '50px 50px',
+          backgroundPosition: '20px 20px',
+          ...theme.applyStyles('dark', {
+            borderColor: 'rgba(255,255,255, 0.1)',
+            backgroundImage:
+              'linear-gradient(rgba(255,255,255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255, 0.1) 1px, transparent 1px)',
+          }),
+        })}
+        xAxis={[{ scaleType: 'band', data: ['PPG', 'APG','RPG', 'BPG'] }]} // Points per game, Assists per game, Blocks per game
+        series={[
+          { data: [seasonAveragePoints, seasonAverageAssists, last5AverageRebounds, seasonAverageBlocks], label: 'Season Avg', id: 'season_id' },
+          { data: [last5AveragePoints, last5AverageAssists,seasonAverageRebounds , last5AverageBlocks], label: 'Last 5 Avg', id: 'last5_id' },
+        ]}
+        colors={colors}
+        width={400}
+        height={300}
+      />
     </div>
   );
 };
