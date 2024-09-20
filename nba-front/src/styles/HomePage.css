@@ -1,0 +1,28 @@
+/* styles/HomePage.css */
+
+.player-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .player-list-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .player-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+  }
+  
+  .player-info {
+    font-weight: bold;
+  }
+  
+  .season-stats-title {
+    margin-top: 10px;
+  }
+  

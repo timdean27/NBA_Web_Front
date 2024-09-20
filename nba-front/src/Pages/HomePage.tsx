@@ -1,16 +1,18 @@
 import React from 'react';
-import PlayerSeasonStats from '../Components/PlayerSeasonStats';
-import Last5GamesStats from '../Components/Last5GamesStats';
+import PlayerStats from '../Components/PlayerStats';
+import PlayerPointsChart from '../Components/PlayerPointsChart';
+import '../styles/HomePage.css';
 
 interface Player {
   player_id: string;
   full_name: string;
+  img_src: string; // Player's image URL
 }
 
 interface HomePageProps {
   players: Player[];
   seasonStats: any[]; // Adjust type as necessary
-  last5Stats: any[]; // Adjust type as necessary
+  last5Stats: any[];  // Adjust type as necessary
 }
 
 const HomePage: React.FC<HomePageProps> = ({ players, seasonStats, last5Stats }) => {
@@ -18,19 +20,23 @@ const HomePage: React.FC<HomePageProps> = ({ players, seasonStats, last5Stats })
     <div>
       <h1>Player List</h1>
       {players.length > 0 ? (
-        <ul>
+        <ul className="player-list">
           {players.map((player) => (
-            <li key={player.player_id}>
-                <div>
-              <strong>{player.full_name}</strong> (ID: {player.player_id})
-              </div>
+            <li key={player.player_id} className="player-list-item">
+              <img
+                src={player.img_src}
+                alt={player.full_name}
+                className="player-image"
+              />
               <div>
-                <h2>Season Stats</h2>
-                <PlayerSeasonStats players={[player]} seasonStats={seasonStats} />
-              </div>
-              <div>
-                <h2>Last 5 Games</h2>
-                <Last5GamesStats players={[player]} last5Stats={last5Stats} />
+                <span className="player-info">{player.full_name}, {player.player_id}</span>
+                <PlayerStats player={player} seasonStats={seasonStats} last5Stats={last5Stats} />
+                {/* Pass season and last 5 stats for the current player */}
+                <PlayerPointsChart 
+                  player={player} 
+                  seasonStats={seasonStats} 
+                  last5Stats={last5Stats} 
+                />
               </div>
             </li>
           ))}
