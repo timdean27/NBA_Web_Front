@@ -1,0 +1,9 @@
+npm install @mui/x-charts
+npm install @mui/material @emotion/react @emotion/styled
+
+import { BarChart, barElementClasses } from '@mui/x-charts/BarChart';
+import { axisClasses } from '@mui/x-charts/ChartsAxis';
+
+npm install apexcharts --save
+
+import ReactApexChart from 'react-apexcharts';

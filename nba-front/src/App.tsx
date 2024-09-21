@@ -5,6 +5,7 @@ import { fetchPlayerList, fetchPlayerSeasonStats, fetchPlayerLast5Stats } from '
 import { RootState, AppDispatch } from './store';
 import HomePage from './Pages/HomePage';
 import HeatmapPage from './Pages/HeatMapPage';
+import Navbar from './Components/Navbar'; // Adjust the path as necessary
 
 const App: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -23,6 +24,7 @@ const App: React.FC = () => {
 
   return (
     <Router>
+      <Navbar />
       <Routes>
         <Route
           path="/"

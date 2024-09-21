@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactApexChart from 'react-apexcharts';
-import { Outlet, Link } from "react-router-dom";
 
 // Define the interface for the props
 interface HeatMapPageProps {
@@ -63,7 +62,6 @@ class HeatMapPage extends React.Component<HeatMapPageProps, HeatMapPageState> {
   render() {
     return (
       <div>
-              <Link to="/">Home Page</Link>
         <div id="chart">
           <ReactApexChart
             options={this.state.options}
