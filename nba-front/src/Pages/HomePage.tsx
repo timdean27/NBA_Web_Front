@@ -1,6 +1,7 @@
 import React from 'react';
 import PlayerStats from '../Components/PlayerStats';
 import Individual_Player_BarGraph from '../Components/Individual_Player_BarGraph';
+import { Outlet, Link } from "react-router-dom";
 import '../styles/HomePage.css';
 
 interface Player {
@@ -19,6 +20,7 @@ const HomePage: React.FC<HomePageProps> = ({ players, seasonStats, last5Stats })
   return (
     <div>
       <h1>Player List</h1>
+      <Link to="/HeatMapPage">Heat Map Page</Link>
       {players.length > 0 ? (
         <ul className="player-list">
           {players.map((player) => (
