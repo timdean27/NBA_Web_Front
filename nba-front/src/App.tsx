@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchPlayerList, fetchPlayerSeasonStats, fetchPlayerLast5Stats } from './features/dataSlice';
 import { RootState, AppDispatch } from './store';
 import HomePage from './Pages/HomePage';
-import HeatmapPage from './Pages/HeatMapPage';
+import BubbleMap from './Pages/BubbleMap';
 import Navbar from './Components/Navbar'; // Adjust the path as necessary
 
 const App: React.FC = () => {
@@ -31,8 +31,8 @@ const App: React.FC = () => {
           element={<HomePage players={players} seasonStats={playerSeasonStats} last5Stats={playerLast5Stats} />}
         />
         <Route 
-          path="/HeatmapPage" 
-          element={<HeatmapPage players={players} seasonStats={playerSeasonStats} last5Stats={playerLast5Stats} />} 
+          path="/BubbleMap" 
+          element={<BubbleMap players={players} seasonStats={playerSeasonStats} last5Stats={playerLast5Stats} />} 
         />
       </Routes>
     </Router>
