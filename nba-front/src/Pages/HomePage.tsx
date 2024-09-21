@@ -1,6 +1,6 @@
 import React from 'react';
 import PlayerStats from '../Components/PlayerStats';
-import PlayerPointsChart from '../Components/PlayerPointsChart';
+import Individual_Player_BarGraph from '../Components/Individual_Player_BarGraph';
 import '../styles/HomePage.css';
 
 interface Player {
@@ -32,7 +32,7 @@ const HomePage: React.FC<HomePageProps> = ({ players, seasonStats, last5Stats })
                 <span className="player-info">{player.full_name}, {player.player_id}</span>
                 <PlayerStats player={player} seasonStats={seasonStats} last5Stats={last5Stats} />
                 {/* Pass season and last 5 stats for the current player */}
-                <PlayerPointsChart 
+                <Individual_Player_BarGraph 
                   player={player} 
                   seasonStats={seasonStats} 
                   last5Stats={last5Stats} 

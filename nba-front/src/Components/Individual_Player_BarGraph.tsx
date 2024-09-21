@@ -24,7 +24,7 @@ interface Last5GameStat {
   total_rebounds: number;
 }
 
-interface PlayerPointsChartProps {
+interface Individual_Player_BarGraphProps {
   player: Player;
   seasonStats: SeasonStat[];
   last5Stats: Last5GameStat[];
@@ -32,7 +32,7 @@ interface PlayerPointsChartProps {
 
 const colors: string[] = ['#FF8C00', '#1E90FF']; // Orange for season avg, Blue for last 5 avg
 
-const PlayerPointsChart: React.FC<PlayerPointsChartProps> = ({ player, seasonStats, last5Stats }) => {
+const Individual_Player_BarGraph: React.FC<Individual_Player_BarGraphProps> = ({ player, seasonStats, last5Stats }) => {
   const [selectedStats, setSelectedStats] = useState({
     points: true,
     assists: true,
@@ -176,4 +176,4 @@ const PlayerPointsChart: React.FC<PlayerPointsChartProps> = ({ player, seasonSta
   );
 };
 
-export default PlayerPointsChart;
+export default Individual_Player_BarGraph;
