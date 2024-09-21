@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchPlayerList, fetchPlayerSeasonStats, fetchPlayerLast5Stats } from './features/dataSlice';
 import { RootState, AppDispatch } from './store';
 import HomePage from './Pages/HomePage';
+import HeatmapPage from './Pages/HeatMapPage'
 
 const App: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -27,13 +29,15 @@ const App: React.FC = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div>
-      <HomePage
-        players={players}
-        seasonStats={playerSeasonStats}
-        last5Stats={playerLast5Stats}
-      />
-    </div>
+    <Router>
+      <Routes>
+        <Route
+          path="/"
+          element={<HomePage players={players} seasonStats={playerSeasonStats} last5Stats={playerLast5Stats} />}
+        />
+        <Route path="/HeatmapPage" element={<HeatmapPage />} />
+      </Routes>
+    </Router>
   );
 };
 
