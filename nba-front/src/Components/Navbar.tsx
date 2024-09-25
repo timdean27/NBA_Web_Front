@@ -7,7 +7,6 @@ const Navbar: React.FC = () => {
   return (
     <nav className="navbar">
       <Link to="/">Home</Link>
-      <Link to="/BubbleMap">BubbleMap</Link>
     </nav>
   );
 };
