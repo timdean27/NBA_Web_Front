@@ -27,7 +27,7 @@ interface BubbleMapState {
   options: ApexCharts.ApexOptions;
   series: Array<{
     name: string;
-    data: { x: number; y: number; z: number }[];
+    data: { x: number; y: number; z: number }[]; // z is for bubble size
   }>;
 }
 
@@ -37,6 +37,9 @@ const calculateAverage = (games: Last5GameStat[], key: 'points'): number => {
   const total = games.reduce((total, game) => total + game[key], 0);
   return total / games.length;
 };
+
+// Helper function to clamp values to a given range
+const clamp = (num: number, min: number, max: number): number => Math.min(Math.max(num, min), max);
 
 class BubbleMap extends React.Component<BubbleMapProps, BubbleMapState> {
   constructor(props: BubbleMapProps) {
@@ -62,34 +65,55 @@ class BubbleMap extends React.Component<BubbleMapProps, BubbleMapState> {
         xaxis: {
           title: {
             text: 'Last 5 Games Average Points',
+            offsetY: 10,
           },
+          max: this.calculateMaxX() + 2, // Set max value for x-axis
         },
         yaxis: {
           title: {
             text: 'Season Average Points',
+            offsetY: 10,
           },
+          max: this.calculateMaxY() + 2, // Set max value for y-axis
         },
       },
       series: series,
     };
+
+    // Log the initialized state
+    console.log('Initial State:', this.state);
   }
 
   // Function to create the bubble chart data for all players
   createBubbleData() {
     const { players, seasonStats, last5Stats } = this.props;
+    console.log('Props received:', this.props);
+
+    console.log('Players:', players);
+    console.log('Season Stats:', seasonStats);
+    console.log('Last 5 Stats:', last5Stats);
 
     return players
       .map((player) => {
         const playerSeasonStats = seasonStats.find((stat) => stat.player === player.player_id);
         const playerLast5GamesStats = last5Stats.filter((game) => game.player === player.player_id);
 
-        if (!playerSeasonStats) return null; // Skip if no season stats found for player
+        if (!playerSeasonStats) {
+          console.warn(`No season stats found for player: ${player.full_name}`);
+          return null; // Skip if no season stats found for player
+        }
 
         const seasonAveragePoints = playerSeasonStats.points_per_game ?? 0;
         const last5AveragePoints = calculateAverage(playerLast5GamesStats, 'points');
 
-        // Calculate the bubble size based on the percentage difference between season and last 5 games
-        const bubbleSize = Math.abs((last5AveragePoints - seasonAveragePoints) / seasonAveragePoints * 100);
+        console.log(`Player: ${player.full_name}, Season Average: ${seasonAveragePoints}, Last 5 Average: ${last5AveragePoints}`);
+
+        // Calculate the percentage difference between season and last 5 games
+        let percentageDifference = ((last5AveragePoints - seasonAveragePoints) / seasonAveragePoints) * 100;
+
+        // Clamp the bubble size to a range of -20 to +20
+        const bubbleSize = clamp(percentageDifference, -100, 100);
+
 
         return {
           name: player.full_name,
@@ -97,7 +121,7 @@ class BubbleMap extends React.Component<BubbleMapProps, BubbleMapState> {
             {
               x: last5AveragePoints,  // Last 5 games average points on the X-axis
               y: seasonAveragePoints,  // Season average points on the Y-axis
-              z: bubbleSize, // Bubble size representing the difference
+              z: bubbleSize,           // Bubble size representing the clamped difference
             },
           ],
         };
@@ -105,7 +129,26 @@ class BubbleMap extends React.Component<BubbleMapProps, BubbleMapState> {
       .filter((data): data is { name: string; data: { x: number; y: number; z: number }[] } => data !== null); // Filter out null values
   }
 
+  // Calculate maximum x value with a minimum of 30
+  calculateMaxX() {
+    const { last5Stats } = this.props;
+    const maxPoints = last5Stats.reduce((max, game) => Math.max(max, game.points), 0);
+    console.log('Max X (Last 5 Games Points):', maxPoints);
+    return Math.max(30, Math.round(maxPoints)); // Set minimum of 30
+  }
+
+  // Calculate maximum y value with a minimum of 30
+  calculateMaxY() {
+    const { seasonStats } = this.props;
+    const maxPoints = seasonStats.reduce((max, stat) => Math.max(max, stat.points_per_game), 0);
+    console.log('Max Y (Season Points):', maxPoints);
+    return Math.max(30, Math.round(maxPoints)); // Set minimum of 30
+  }
+
   render() {
+    // Log when the component renders with updated data
+    console.log('Rendering BubbleMap with series:', this.state.series);
+
     return (
       <div>
         <div id="chart">

@@ -1,6 +1,7 @@
 import React from 'react';
 import PlayerStats from '../Components/PlayerStats';
 import Individual_Player_BarGraph from '../Components/Individual_Player_BarGraph';
+import BubbleMap from '../Components/BubbleMap'
 import '../styles/HomePage.css';
 
 interface Player {
@@ -16,9 +17,14 @@ interface HomePageProps {
 }
 
 const HomePage: React.FC<HomePageProps> = ({ players, seasonStats, last5Stats }) => {
+  console.log('HomePage Players:', players);
+  console.log('HomePage Season Stats:', seasonStats);
+  console.log('HomePage Last 5 Stats:', last5Stats);
+
   return (
     <div>
       <h1>Player List</h1>
+      <BubbleMap players={players} seasonStats={seasonStats} last5Stats={last5Stats} />
       {players.length > 0 ? (
         <ul className="player-list">
           {players.map((player) => (
@@ -31,7 +37,6 @@ const HomePage: React.FC<HomePageProps> = ({ players, seasonStats, last5Stats })
               <div>
                 <span className="player-info">{player.full_name}, {player.player_id}</span>
                 <PlayerStats player={player} seasonStats={seasonStats} last5Stats={last5Stats} />
-                {/* Pass season and last 5 stats for the current player */}
                 <Individual_Player_BarGraph 
                   player={player} 
                   seasonStats={seasonStats} 
@@ -48,4 +53,4 @@ const HomePage: React.FC<HomePageProps> = ({ players, seasonStats, last5Stats })
   );
 };
 
-export default HomePage;
+export default HomePage
