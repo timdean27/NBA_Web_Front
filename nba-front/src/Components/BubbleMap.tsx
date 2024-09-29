@@ -40,6 +40,7 @@ const calculateAverage = (games: Last5GameStat[], key: 'points'): number => {
 
 // Helper function to clamp values to a given range
 const clamp = (num: number, min: number, max: number): number => Math.min(Math.max(num, min), max);
+const MIN_BUBBLE_SIZE = 10; // Adjust this value as needed
 
 class BubbleMap extends React.Component<BubbleMapProps, BubbleMapState> {
   constructor(props: BubbleMapProps) {
@@ -67,7 +68,7 @@ class BubbleMap extends React.Component<BubbleMapProps, BubbleMapState> {
             text: 'Last 5 Games Average Points',
             offsetY: 10,
           },
-          max: this.calculateMaxX() + 2, // Set max value for x-axis
+          max: this.calculateMaxX(), // Set max value for x-axis
         },
         yaxis: {
           title: {
@@ -76,10 +77,28 @@ class BubbleMap extends React.Component<BubbleMapProps, BubbleMapState> {
           },
           max: this.calculateMaxY() + 2, // Set max value for y-axis
         },
+        tooltip: {
+          enabled: true, // Enable the tooltip
+          custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+            const playerName = w.globals.seriesNames[seriesIndex]; // Player's name
+            const last5AvgPoints = w.config.series[seriesIndex].data[dataPointIndex].x; // X value (Last 5 Avg Points)
+            const seasonAvgPoints = w.config.series[seriesIndex].data[dataPointIndex].y; // Y value (Season Avg Points)
+            const bubbleSize = w.config.series[seriesIndex].data[dataPointIndex].z; // Z value (Bubble Size)
+            
+            // Customize the content of the tooltip
+            return `
+              <div style="padding: 10px;">
+                <strong>${playerName}</strong><br/>
+                Last 5 Games Average: ${last5AvgPoints} Points<br/>
+                Season Average Points: ${seasonAvgPoints} Points<br/>
+                Bubble Size (Impact): ${bubbleSize}%
+              </div>`;
+          },
+        },
       },
       series: series,
     };
-
+    
     // Log the initialized state
     console.log('Initial State:', this.state);
   }
@@ -111,9 +130,10 @@ class BubbleMap extends React.Component<BubbleMapProps, BubbleMapState> {
         // Calculate the percentage difference between season and last 5 games
         let percentageDifference = ((last5AveragePoints - seasonAveragePoints) / seasonAveragePoints) * 100;
 
-        // Clamp the bubble size to a range of -20 to +20
-        const bubbleSize = clamp(percentageDifference, -100, 100);
+        // Clamp the bubble size to a minimum size
+        const bubbleSize = Math.max(MIN_BUBBLE_SIZE, clamp(percentageDifference, -35, 35));
 
+        console.log(`Bubble Size for ${player.full_name}:`, bubbleSize);
 
         return {
           name: player.full_name,

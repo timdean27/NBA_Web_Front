@@ -21,10 +21,22 @@ const HomePage: React.FC<HomePageProps> = ({ players, seasonStats, last5Stats })
   console.log('HomePage Season Stats:', seasonStats);
   console.log('HomePage Last 5 Stats:', last5Stats);
 
+
+    // Check if data is available before rendering the child component
+    const isDataAvailable = players.length > 0 && seasonStats.length > 0 && last5Stats.length > 0;
+
+
   return (
     <div>
       <h1>Player List</h1>
-      <BubbleMap players={players} seasonStats={seasonStats} last5Stats={last5Stats} />
+      
+      {isDataAvailable ? (
+        <BubbleMap players={players} seasonStats={seasonStats} last5Stats={last5Stats} />
+      ) : (
+        <p>Loading...</p> // You can replace this with a loading spinner if desired
+      )}
+
+
       {players.length > 0 ? (
         <ul className="player-list">
           {players.map((player) => (
