@@ -1,0 +1,169 @@
+# Understanding Redux and How It's Used in the Code
+
+## What is Redux?
+
+Redux is a state management library that helps manage application-level state in JavaScript applications, especially in larger applications where managing the state across many components can become challenging.
+
+Redux is based on three core principles:
+1. **Single Source of Truth**: The state of the entire application is stored in one central location (the store).
+2. **State is Read-Only**: The only way to change the state is to emit an action that describes what happened.
+3. **Changes via Pure Functions**: To specify how the state tree is transformed by actions, you write pure reducers.
+
+## Key Components of Redux:
+1. **Store**: Holds the state of the application.
+2. **Actions**: Describe changes to the state (they are dispatched when something happens, like user input or data fetching).
+3. **Reducers**: Handle state changes in response to actions.
+4. **Dispatch**: Sends an action to the store to trigger a state update.
+5. **Selectors**: Functions that retrieve specific parts of the state.
+
+## Redux Toolkit
+Redux Toolkit is the recommended way to write Redux logic because it simplifies the process of setting up a Redux store and writing reducers and actions. It abstracts away much of the boilerplate code associated with Redux.
+
+### Key features of Redux Toolkit:
+- `createSlice`: Creates a Redux slice, including the reducer and action creators.
+- `createAsyncThunk`: Simplifies handling of async logic (like API calls) by managing loading, success, and failure states.
+
+---
+
+## How Redux is Used in the Provided Code
+
+In the provided code, Redux Toolkit is used to manage the application state related to NBA players and their stats. The state is updated based on the result of API requests to fetch player data from a Django backend.
+
+### Step-by-Step Breakdown
+
+1. **Setting Up API Requests with `createAsyncThunk`**:
+   - Redux manages asynchronous API requests through `createAsyncThunk`, which automatically handles pending, fulfilled, and rejected states.
+   - In the code, three asynchronous actions are created: 
+     - `fetchPlayerList`: Fetches the list of players.
+     - `fetchPlayerSeasonStats`: Fetches the season stats for players.
+     - `fetchPlayerLast5Stats`: Fetches the stats of the players' last 5 games.
+   
+   These functions use `axios` to make HTTP GET requests and return the fetched data.
+
+2. **Initial State**:
+   - The `initialState` defines the default structure of the Redux slice, including:
+     - `players`: An array to store player data.
+     - `playerSeasonStats`: An array to store player season stats.
+     - `playerLast5Stats`: An array to store the last 5 games stats.
+     - `loading`: A boolean that indicates whether an API request is in progress.
+     - `error`: A string to store any error message if the request fails.
+
+3. **Using `createSlice`**:
+   - `createSlice` is used to define a slice of the Redux store, including:
+     - The **name** of the slice (`data` in this case).
+     - The **initial state**.
+     - **Reducers**: In this case, reducers are not needed because all state changes are handled in response to asynchronous actions.
+     - **extraReducers**: This handles state updates based on the pending, fulfilled, and rejected states of the asynchronous actions. 
+
+4. **Handling Asynchronous Actions**:
+   - `extraReducers` uses `builder.addCase` to handle three cases for each async action:
+     - **pending**: When the API request is in progress, it sets `loading` to `true`.
+     - **fulfilled**: When the API request is successful, it stores the fetched data in the corresponding state (e.g., `players`, `playerSeasonStats`, or `playerLast5Stats`).
+     - **rejected**: When the API request fails, it stores the error message in the `error` field and sets `loading` to `false`.
+
+### Example: Fetching Player List
+
+- When `fetchPlayerList` is dispatched:
+  1. It makes a GET request to `/api/players/`.
+  2. While the request is in progress, `loading` is set to `true`.
+  3. If the request succeeds, the `players` array is updated with the data from the API response, and `loading` is set to `false`.
+  4. If the request fails, the `error` state is updated with the error message.
+
+---
+
+## Steps to Set Up Redux in Your Application
+
+1. **Install Redux Toolkit**:
+   ```bash
+   npm install @reduxjs/toolkit react-redux
+   ```
+
+2. **Create a Redux Slice**:
+   - In your `src` folder, create a new folder for your Redux slices (e.g., `store`).
+   - Inside the folder, create a new file (e.g., `dataSlice.ts`).
+   
+   ```typescript
+   import { createSlice } from '@reduxjs/toolkit';
+
+   const initialState = { /* Your initial state */ };
+
+   const dataSlice = createSlice({
+     name: 'data',
+     initialState,
+     reducers: {
+       // Define any synchronous reducers here
+     },
+   });
+
+   export const { /* Your action creators */ } = dataSlice.actions;
+   export default dataSlice.reducer;
+   ```
+
+3. **Set Up the Redux Store**:
+   - In your `src` folder, create a `store.ts` file.
+   
+   ```typescript
+   import { configureStore } from '@reduxjs/toolkit';
+   import dataReducer from './dataSlice';
+
+   const store = configureStore({
+     reducer: {
+       data: dataReducer, // Add your slice reducer here
+     },
+   });
+
+   export default store;
+   ```
+
+4. **Provide the Store to Your React Application**:
+   - In your main `index.tsx` or `App.tsx` file, wrap your app with the `Provider` from `react-redux` and pass in the store.
+
+   ```typescript
+   import React from 'react';
+   import ReactDOM from 'react-dom';
+   import { Provider } from 'react-redux';
+   import store from './store';
+
+   ReactDOM.render(
+     <Provider store={store}>
+       <App />
+     </Provider>,
+     document.getElementById('root')
+   );
+   ```
+
+5. **Dispatch Actions and Use State in Your Components**:
+   - In any component, you can now use the `useDispatch` and `useSelector` hooks from `react-redux` to interact with your Redux state.
+
+   ```typescript
+   import React, { useEffect } from 'react';
+   import { useDispatch, useSelector } from 'react-redux';
+   import { fetchPlayerList } from './store/dataSlice';
+
+   const PlayerList = () => {
+     const dispatch = useDispatch();
+     const players = useSelector((state) => state.data.players);
+     const loading = useSelector((state) => state.data.loading);
+     const error = useSelector((state) => state.data.error);
+
+     useEffect(() => {
+       dispatch(fetchPlayerList());
+     }, [dispatch]);
+
+     return (
+       <div>
+         {loading && <p>Loading...</p>}
+         {error && <p>Error: {error}</p>}
+         <ul>
+           {players.map((player) => (
+             <li key={player.id}>{player.name}</li>
+           ))}
+         </ul>
+       </div>
+     );
+   };
+
+   export default PlayerList;
+   ```
+
+With this setup, your React application will be able to manage and interact with global state using Redux. In this example, you can fetch data, manage loading states, and handle errors effectively.
