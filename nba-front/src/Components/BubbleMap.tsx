@@ -104,17 +104,17 @@ class BubbleMap extends React.Component<BubbleMapProps, BubbleMapState> {
     };
 
     // Log the initialized state
-    console.log("Initial State:", this.state);
+    // console.log("Initial State:", this.state);
   }
 
   // Function to create the bubble chart data for all players
   createBubbleData() {
     const { players, seasonStats, last5Stats } = this.props;
-    console.log("Props received:", this.props);
+    // console.log("Props received:", this.props);
 
-    console.log("Players:", players);
-    console.log("Season Stats:", seasonStats);
-    console.log("Last 5 Stats:", last5Stats);
+    // console.log("Players:", players);
+    // console.log("Season Stats:", seasonStats);
+    // console.log("Last 5 Stats:", last5Stats);
 
     return players
       .map((player) => {
@@ -126,7 +126,7 @@ class BubbleMap extends React.Component<BubbleMapProps, BubbleMapState> {
         );
 
         if (!playerSeasonStats) {
-          console.warn(`No season stats found for player: ${player.full_name}`);
+          // console.warn(`No season stats found for player: ${player.full_name}`);
           return null; // Skip if no season stats found for player
         }
 
@@ -136,9 +136,9 @@ class BubbleMap extends React.Component<BubbleMapProps, BubbleMapState> {
           "points"
         );
 
-        console.log(
-          `Player: ${player.full_name}, Season Average: ${seasonAveragePoints}, Last 5 Average: ${last5AveragePoints}`
-        );
+        // console.log(
+        //   `Player: ${player.full_name}, Season Average: ${seasonAveragePoints}, Last 5 Average: ${last5AveragePoints}`
+        // );
 
         // Calculate the percentage difference between season and last 5 games
         let percentageDifference =
@@ -151,7 +151,7 @@ class BubbleMap extends React.Component<BubbleMapProps, BubbleMapState> {
           clamp(percentageDifference, -35, 35)
         );
 
-        console.log(`Bubble Size for ${player.full_name}:`, bubbleSize);
+        // console.log(`Bubble Size for ${player.full_name}:`, bubbleSize);
 
         return {
           name: player.full_name,
@@ -181,7 +181,7 @@ class BubbleMap extends React.Component<BubbleMapProps, BubbleMapState> {
       (max, game) => Math.max(max, game.points),
       0
     );
-    console.log("Max X (Last 5 Games Points):", maxPoints);
+    // console.log("Max X (Last 5 Games Points):", maxPoints);
     return Math.max(30, Math.round(maxPoints)); // Set minimum of 30
   }
 
@@ -192,13 +192,13 @@ class BubbleMap extends React.Component<BubbleMapProps, BubbleMapState> {
       (max, stat) => Math.max(max, stat.points_per_game),
       0
     );
-    console.log("Max Y (Season Points):", maxPoints);
+    // console.log("Max Y (Season Points):", maxPoints);
     return Math.max(30, Math.round(maxPoints)); // Set minimum of 30
   }
 
   render() {
     // Log when the component renders with updated data
-    console.log("Rendering BubbleMap with series:", this.state.series);
+    // console.log("Rendering BubbleMap with series:", this.state.series);
 
     return (
       <div>
