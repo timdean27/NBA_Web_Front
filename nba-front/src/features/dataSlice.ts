@@ -5,7 +5,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios'; 
 // axios: A popular library used for making HTTP requests.
 
-const BASE_URL = 'http://nbadjangoapplication-env.eba-fpdumciw.us-east-2.elasticbeanstalk.com';
+const BASE_URL = process.env.REACT_APP_BASE_URL; 
 // BASE_URL: The base URL for the Django backend server where the NBA player-related APIs are hosted.
 
 

@@ -1,36 +1,28 @@
 import React, { useState } from 'react';
 import PlayerStats from '../Components/PlayerStats';
 import Individual_Player_BarGraph from '../Components/Individual_Player_BarGraph';
-import BubbleMap from '../Components/BubbleMap'
-import PlayerSearch from '../Components/PlayerSearchProps'
+import BubbleMap from '../Components/BubbleMap';
+import PlayerSearch from '../Components/PlayerSearchProps';
+import { Player, SeasonStat, Last5GameStat } from '../types/interfaces'; // Importing interfaces
 import '../styles/HomePage.css';
-
-interface Player {
-  player_id: string;
-  full_name: string;
-  img_src: string; // Player's image URL
-}
 
 interface HomePageProps {
   players: Player[];
-  seasonStats: any[]; // Adjust type as necessary
-  last5Stats: any[];  // Adjust type as necessary
+  seasonStats: SeasonStat[]; 
+  last5Stats: Last5GameStat[]; // Use the specific Last5GameStat type
 }
 
 const HomePage: React.FC<HomePageProps> = ({ players, seasonStats, last5Stats }) => {
-  // console.log('HomePage Players:', players);
-  // console.log('HomePage Season Stats:', seasonStats);
-  // console.log('HomePage Last 5 Stats:', last5Stats);
   const [searchTerm, setSearchTerm] = useState('');
 
-    // Check if data is available before rendering the child component
-    const isDataAvailable = players.length > 0 && seasonStats.length > 0 && last5Stats.length > 0;
+  // Check if data is available before rendering the child components
+  const isDataAvailable = players.length > 0 && seasonStats.length > 0 && last5Stats.length > 0;
 
-  // Filter players by search term
-  const filteredPlayers = players.filter(player =>
-    player.full_name.toLowerCase().includes(searchTerm.toLowerCase())
+  // Filter players by search term and check if player_id is found in seasonStats
+  const filteredPlayers = players.filter(player => 
+    player.full_name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    seasonStats.some(stat => stat.player === player.player_id) // Ensure the player_id exists in seasonStats
   );
-
 
   return (
     <div>
@@ -44,7 +36,7 @@ const HomePage: React.FC<HomePageProps> = ({ players, seasonStats, last5Stats })
         <p>Loading...</p> // You can replace this with a loading spinner if desired
       )}
 
-  {filteredPlayers.length > 0 ? (
+      {filteredPlayers.length > 0 ? (
         <ul className="player-list">
           {filteredPlayers.map((player) => (
             <li key={player.player_id} className="player-list-item">
@@ -54,9 +46,15 @@ const HomePage: React.FC<HomePageProps> = ({ players, seasonStats, last5Stats })
                 className="player-image"
               />
               <div>
-                <span className="player-info">{player.full_name}, {player.player_id}</span>
-                <PlayerStats player={player} seasonStats={seasonStats} last5Stats={last5Stats} />
+                <span className="player-info">
+                  {player.full_name}, {player.player_id}
+                </span>
                 <Individual_Player_BarGraph 
+                  player={player} 
+                  seasonStats={seasonStats} 
+                  last5Stats={last5Stats} 
+                />
+                <PlayerStats 
                   player={player} 
                   seasonStats={seasonStats} 
                   last5Stats={last5Stats} 
@@ -72,4 +70,4 @@ const HomePage: React.FC<HomePageProps> = ({ players, seasonStats, last5Stats })
   );
 };
 
-export default HomePage
+export default HomePage;

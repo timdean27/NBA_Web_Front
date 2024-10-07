@@ -1,30 +1,69 @@
-/* styles/PlayerStats.css */
-
 .player-stats {
-    margin: 15px 0;
-  }
-  
-  .season-stats,
-  .last-5-games {
-    background-color: #f9f9f9;
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-  }
-  
-  .season-stats ul, 
-  .last-5-games ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .season-stats ul li,
-  .last-5-games ul li {
-    margin: 5px 0;
-    font-size: 14px;
-  }
-  
-  .last-5-games h4 {
-    margin-top: 10px;
-  }
-  
+  margin: 15px 0;
+  width: 100%;
+  box-sizing: border-box; /* Ensure padding and border are included in the element's width */
+  overflow-x: auto; /* Allow horizontal scroll if necessary */
+}
+
+.season-stats,
+.last-5-games {
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  max-width: 100%; /* Prevents overflow */
+  overflow-wrap: break-word; /* Wrap long words or text content */
+}
+
+.season-stats ul,
+.last-5-games ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.season-stats ul li,
+.last-5-games ul li {
+  margin: 5px 0;
+  font-size: 14px;
+  white-space: nowrap; /* Prevents text from wrapping */
+  text-overflow: ellipsis; /* Show ellipsis when text overflows */
+  overflow: hidden; /* Hide overflowing content */
+}
+
+.last-5-games h4 {
+  margin-top: 10px;
+}
+
+/* Ensure all list items and content are constrained to their parent element */
+.player-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  overflow: hidden; /* Ensure no overflow outside the container */
+  width: 100%;
+}
+
+.player-list-item {
+  flex-basis: calc(25% - 10px); /* Each player item will take up 25% of the row, adjust as necessary */
+  max-width: 100%; /* Prevents item overflow */
+  box-sizing: border-box;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.player-image {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
+.player-info {
+  font-size: 16px;
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Show ellipsis when text overflows */
+  max-width: 100%;
+}

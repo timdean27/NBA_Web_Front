@@ -1,28 +1,40 @@
-/* styles/HomePage.css */
-
 .player-list {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .player-list-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .player-image {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    margin-right: 15px;
-  }
-  
-  .player-info {
-    font-weight: bold;
-  }
-  
-  .season-stats-title {
-    margin-top: 10px;
-  }
-  
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-evenly;
+  padding: 0;
+  list-style: none;
+}
+
+.player-list-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 220px; /* Slightly adjusted width */
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  box-sizing: border-box;
+}
+
+.player-image {
+  width: 100%; /* Full width of the container */
+  height: auto;
+  max-width: 150px; /* Control image size */
+}
+
+.player-info {
+  margin-top: 10px;
+  font-weight: bold;
+  text-align: center;
+  overflow: hidden; /* Prevent overflow */
+  text-overflow: ellipsis; /* Adds ellipsis if text is too long */
+  white-space: nowrap; /* Ensures text doesn't wrap */
+  width: 100%; /* Ensure it respects the width of the container */
+}
+
+.player-bargraph {
+  margin-top: 10px; /* Add margin to space out from the player info */
+}
