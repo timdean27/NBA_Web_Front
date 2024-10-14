@@ -3,6 +3,7 @@ import PlayerStats from '../Components/PlayerStats';
 import Individual_Player_BarGraph from '../Components/Individual_Player_BarGraph';
 import BubbleMap from '../Components/BubbleMap';
 import PlayerSearch from '../Components/PlayerSearchProps';
+import FilterByHotStreak from '../Components/FilterByHotStreak'
 import { Player, SeasonStat, Last5GameStat } from '../types/interfaces'; // Importing interfaces
 import '../styles/HomePage.css';
 
@@ -28,7 +29,8 @@ const HomePage: React.FC<HomePageProps> = ({ players, seasonStats, last5Stats })
     <div>
       <h1>Player List</h1>
       <PlayerSearch searchTerm={searchTerm} onSearchChange={setSearchTerm} />
-
+            {/* Pass all filtered players to FilterByHotStreak */}
+<FilterByHotStreak players={filteredPlayers} seasonStats={seasonStats} last5Stats={last5Stats} />
       {/* Bubble Map */}
       {isDataAvailable ? (
         <BubbleMap players={filteredPlayers} seasonStats={seasonStats} last5Stats={last5Stats} />
@@ -66,6 +68,7 @@ const HomePage: React.FC<HomePageProps> = ({ players, seasonStats, last5Stats })
       ) : (
         <p>No players available.</p>
       )}
+
     </div>
   );
 };
