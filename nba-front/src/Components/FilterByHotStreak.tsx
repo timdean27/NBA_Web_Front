@@ -11,7 +11,7 @@ const FilterByHotStreak: React.FC<FilterByHotStreakProps> = ({ players, seasonSt
 
   // Example Hot Streak Logic: A player is on a hot streak if their average points in the last 5 games 
   // is 20% higher than their season average points.
-  const hotStreakThreshold = 1.2; // 20% increase
+  const hotStreakThreshold = 1.3; // 30% increase
 
   // Process each player to determine if they are on a hot streak
   const playersWithHotStreakData = players.map((player) => {
